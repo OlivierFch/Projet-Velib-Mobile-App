@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/btnNormal"
+        android:title="Par défaut"/>
+
+    <item
+        android:id="@+id/btnSatellite"
+        android:title="Vue satellite"/>
+
+    <item
+        android:id="@+id/btnHybrid"
+        android:title="Vue hybride"/>
+
+</menu>
