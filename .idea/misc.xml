@@ -5,10 +5,12 @@
       <map>
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/gradient_background.xml" value="0.1685" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_baseline_my_location_24.xml" value="0.1685" />
+        <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_favorite_full.xml" value="0.121" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_map_type.xml" value="0.1685" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_my_location.xml" value="0.1685" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_synchro.xml" value="0.1685" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/searchview_background.xml" value="0.1685" />
+        <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/activity_details.xml" value="0.22826086956521738" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/activity_splash_screen.xml" value="0.22826086956521738" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/favorite_stations_layout.xml" value="0.22826086956521738" />

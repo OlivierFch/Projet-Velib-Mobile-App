@@ -8,9 +8,14 @@ import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,8 +28,10 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.maps.android.clustering.ClusterManager
 import fr.perso.projetvelib.api.VelibApi
+import fr.perso.projetvelib.databinding.ActivityMainBinding
 import fr.perso.projetvelib.model.Station
 import fr.perso.projetvelib.model.StationDetails
+import fr.perso.projetvelib.model.StationsAdapter
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -39,13 +46,49 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var isLocationPermissionOk = false
     private lateinit var currentLocation: Location
     private var currentMarker: Marker? = null
+
     private val stations: MutableList<Station> = mutableListOf()
     private val stationDetails: MutableList<StationDetails> = mutableListOf()
 
+    private lateinit var binding: ActivityMainBinding
+
+    private lateinit var recyclerViewStations: RecyclerView
+    lateinit var stationsAdapter: StationsAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         supportActionBar?.hide()
+
+        recyclerViewStations = findViewById(R.id.stationList)
+
+        stationsAdapter = StationsAdapter(stations)
+        recyclerViewStations.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            adapter = stationsAdapter
+        }
+
+        binding.searchBar.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                stationsAdapter.filter.filter(newText)
+                return false
+            }
+        })
+
+        val searchIcon = binding.searchBar.findViewById<ImageView>(androidx.appcompat.R.id.search_mag_icon)
+        searchIcon.setColorFilter(Color.WHITE)
+
+        val cancelIcon = binding.searchBar.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
+        cancelIcon.setColorFilter(Color.WHITE)
+
+        val textView = binding.searchBar.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
+        textView.setTextColor(Color.WHITE)
+
 
         mapFragment = supportFragmentManager.findFragmentById(R.id.map_carte) as SupportMapFragment
         mapFragment.getMapAsync(this)

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <RelativeLayout
@@ -12,31 +13,34 @@
 
         <fragment
             android:id="@+id/map_carte"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:name="com.google.android.gms.maps.SupportMapFragment"/>
+            android:layout_height="match_parent" />
 
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/searchView"
+            android:id="@+id/searchBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/searchview_background"
+            android:textCursorDrawable="@null"
             app:iconifiedByDefault="false"
-            app:queryBackground="@color/transparent"
-            app:queryHint="Chercher une station..." />
+            app:queryBackground="@null"
+            android:background="@drawable/searchview_background" />
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/stationList"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="70dp"
-            android:layout_marginEnd="20dp"
+            android:layout_height="280dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginEnd="30dp"
+            android:background="@color/transparent"
             tools:listitem="@layout/layout_station" />
+
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/favorite_stations_button"
@@ -45,8 +49,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="25dp"
-            android:layout_marginBottom="290dp"
-            android:backgroundTint="@color/vert_marin"
+            android:layout_marginBottom="270dp"
+            android:backgroundTint="@color/vert_marin_clair"
             android:src="@drawable/ic_favorite_full" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -68,8 +72,8 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="25dp"
             android:layout_marginBottom="110dp"
-            android:src="@drawable/ic_synchro"
-            android:backgroundTint="@color/vert_marin" />
+            android:backgroundTint="@color/vert_marin"
+            android:src="@drawable/ic_synchro" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/geolocation_button"
@@ -79,8 +83,8 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="25dp"
             android:layout_marginBottom="30dp"
-            android:src="@drawable/ic_my_location"
-            android:backgroundTint="@color/vert_marin" />
+            android:backgroundTint="@color/vert_marin"
+            android:src="@drawable/ic_my_location" />
 
     </RelativeLayout>
 
