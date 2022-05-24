@@ -26,6 +26,10 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".FavoriteStationsActivity"
+            android:screenOrientation="portrait">
+        </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC4TZAEeG4ANsJlxDz5L_qEJgEvqfwAolA"/>

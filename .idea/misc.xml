@@ -4,11 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/gradient_background.xml" value="0.1685" />
+        <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_baseline_my_location_24.xml" value="0.1685" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_map_type.xml" value="0.1685" />
+        <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_my_location.xml" value="0.1685" />
+        <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_synchro.xml" value="0.1685" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/searchview_background.xml" value="0.1685" />
-        <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
+        <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/activity_splash_screen.xml" value="0.22826086956521738" />
+        <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/favorite_stations_layout.xml" value="0.22826086956521738" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/layout_station.xml" value="0.22826086956521738" />
+        <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/menu/favoris_station_menu.xml" value="0.25" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/menu/map_type_menu.xml" value="0.25" />
       </map>
     </option>

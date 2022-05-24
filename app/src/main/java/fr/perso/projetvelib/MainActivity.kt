@@ -1,14 +1,16 @@
 package fr.perso.projetvelib
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.location.Location
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.PopupMenu
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -43,7 +45,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         supportActionBar?.hide()
 
         mapFragment = supportFragmentManager.findFragmentById(R.id.map_carte) as SupportMapFragment
@@ -88,14 +89,24 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         setUpClusterManager(it)
 
 
+        // Bouton qui permet d'accéder à la page des stations favorites
+        val favoriteButton = findViewById<FloatingActionButton>(R.id.favorite_stations_button)
+        favoriteButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
+        favoriteButton.setOnClickListener {
+            val intent = Intent(this, FavoriteStationsActivity::class.java) // Intention de vouloir accéder à l'activité FavoriteStationsActivity
+            startActivity(intent)
+        }
         // Bouton qui permet de changer le type de carte en fonction des besoins
         val mapTypeButton = findViewById<FloatingActionButton>(R.id.map_type_button)
+        mapTypeButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         mapTypeButton.setOnClickListener { selectMapMenu() }
         // Bouton de refresh pour avoir les dernières infos des stations
         val synchroApiButton = findViewById<FloatingActionButton>(R.id.map_synchro_api)
+        synchroApiButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         synchroApiButton.setOnClickListener { synchroApi() }
         // Bouton qui permet de se géolocaliser
         val geolocationButton = findViewById<FloatingActionButton>(R.id.geolocation_button)
+        geolocationButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         geolocationButton.setOnClickListener { getCurrentLocation() }
 
     }
