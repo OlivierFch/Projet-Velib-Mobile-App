@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private var isLocationPermissionOk = false
     private lateinit var currentLocation: Location
+    private lateinit var markerLocation: Location
     private var currentMarker: Marker? = null
 
     private val stations: MutableList<Station> = mutableListOf()
@@ -76,6 +77,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val textView = binding.searchBar.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
         textView.setTextColor(Color.WHITE)
+        textView.hint = "Chercher une station..."
 
         val cancelIcon = binding.searchBar.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
         cancelIcon.setOnClickListener {
@@ -289,8 +291,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         clusterManager.addItems(stations)
         clusterManager.cluster()
-
-
 
     }
 
