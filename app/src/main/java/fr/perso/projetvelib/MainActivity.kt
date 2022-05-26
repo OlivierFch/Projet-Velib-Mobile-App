@@ -20,10 +20,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -109,6 +106,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     override fun onMapReady(it: GoogleMap) {
+
+        val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+            LatLng(
+                48.8618454,2.3521999
+            ), 10f
+        )
+
+        it.moveCamera(cameraUpdate)
 
         if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED && ActivityCompat
@@ -284,6 +289,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         clusterManager.addItems(stations)
         clusterManager.cluster()
+
+
 
     }
 
