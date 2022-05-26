@@ -11,6 +11,7 @@ class FavoriteStationsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.favorite_stations_layout)
+        supportActionBar?.hide()
 
     }
 

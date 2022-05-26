@@ -12,8 +12,11 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
+import androidx.core.view.isEmpty
+import androidx.core.view.isNotEmpty
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationServices
@@ -51,8 +54,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private val stationDetails: MutableList<StationDetails> = mutableListOf()
 
     private lateinit var binding: ActivityMainBinding
-
-    private lateinit var recyclerViewStations: RecyclerView
+    lateinit var recyclerViewStations: RecyclerView
     lateinit var stationsAdapter: StationsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,25 +71,35 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             adapter = stationsAdapter
         }
 
+        binding.stationList.isVisible = false
+
+
+        val searchIcon = binding.searchBar.findViewById<ImageView>(androidx.appcompat.R.id.search_mag_icon)
+        searchIcon.setColorFilter(Color.WHITE)
+
+        val textView = binding.searchBar.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
+        textView.setTextColor(Color.WHITE)
+
+        val cancelIcon = binding.searchBar.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
+        cancelIcon.setOnClickListener {
+            textView.editableText.clear()
+            binding.stationList.isVisible = false
+        }
+        cancelIcon.setColorFilter(Color.WHITE)
+
+
         binding.searchBar.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                binding.stationList.isVisible = textView.text.isNotEmpty()
                 stationsAdapter.filter.filter(newText)
+
                 return false
             }
         })
-
-        val searchIcon = binding.searchBar.findViewById<ImageView>(androidx.appcompat.R.id.search_mag_icon)
-        searchIcon.setColorFilter(Color.WHITE)
-
-        val cancelIcon = binding.searchBar.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
-        cancelIcon.setColorFilter(Color.WHITE)
-
-        val textView = binding.searchBar.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
-        textView.setTextColor(Color.WHITE)
 
 
         mapFragment = supportFragmentManager.findFragmentById(R.id.map_carte) as SupportMapFragment
@@ -131,13 +143,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // Afficher les stations sous forme de clusters
         setUpClusterManager(it)
 
-
-        // Bouton qui permet d'accéder à la page des stations favorites
+        // Bouton qui permet de changer d'activité et afficher la liste des stations favorites
         val favoriteButton = findViewById<FloatingActionButton>(R.id.favorite_stations_button)
         favoriteButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         favoriteButton.setOnClickListener {
-            val intent = Intent(this, FavoriteStationsActivity::class.java) // Intention de vouloir accéder à l'activité FavoriteStationsActivity
-            startActivity(intent)
+            startActivity(Intent(this, FavoriteStationsActivity::class.java))
         }
         // Bouton qui permet de changer le type de carte en fonction des besoins
         val mapTypeButton = findViewById<FloatingActionButton>(R.id.map_type_button)

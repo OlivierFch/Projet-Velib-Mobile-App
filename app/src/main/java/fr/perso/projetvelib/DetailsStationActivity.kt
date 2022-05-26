@@ -15,6 +15,7 @@ class DetailsStationActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        supportActionBar?.hide()
         //binding.detailStationName.text = intent.extras!!.getString("")
 
     }
