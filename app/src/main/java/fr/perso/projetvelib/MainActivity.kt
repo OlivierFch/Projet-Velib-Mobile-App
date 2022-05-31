@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
@@ -19,16 +20,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.maps.android.clustering.ClusterManager
 import fr.perso.projetvelib.api.VelibApi
 import fr.perso.projetvelib.databinding.ActivityMainBinding
 import fr.perso.projetvelib.model.Station
-import fr.perso.projetvelib.model.StationDetails
 import fr.perso.projetvelib.model.StationsAdapter
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -43,11 +41,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private var isLocationPermissionOk = false
     private lateinit var currentLocation: Location
-    private lateinit var markerLocation: Location
     private var currentMarker: Marker? = null
 
     private val stations: MutableList<Station> = mutableListOf()
-    private val stationDetails: MutableList<StationDetails> = mutableListOf()
 
     private lateinit var binding: ActivityMainBinding
     lateinit var recyclerViewStations: RecyclerView
@@ -97,7 +93,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 return false
             }
         })
-
 
         mapFragment = supportFragmentManager.findFragmentById(R.id.map_carte) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -166,6 +161,26 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val geolocationButton = findViewById<FloatingActionButton>(R.id.geolocation_button)
         geolocationButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         geolocationButton.setOnClickListener { getCurrentLocation() }
+
+
+        // Sélection d'une station active un bottomsheet avec le détails des stations
+        /*it.setOnMarkerClickListener {
+
+            val dialog = BottomSheetDialog(this)
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
+
+            val btnFavorite = view.findViewById<Button>(R.id.idBtnFavorite)
+            val btnClose = view.findViewById<Button>(R.id.idBtnDismiss)
+
+            //btnFavorite.setOnClickListener { favoriteStationsList.add(it) }
+            btnClose.setOnClickListener { dialog.dismiss() }
+            dialog.setContentView(view)
+            dialog.isShowing
+
+        }*/
+
+        var bottomFragment = BottomFragment()
+        bottomFragment.show(supportFragmentManager, TAG)
 
     }
 
@@ -283,6 +298,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         clusterManager.addItems(stations)
         clusterManager.cluster()
+
+
 
     }
 

@@ -10,10 +10,12 @@
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_my_location.xml" value="0.1685" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_search.xml" value="0.1685" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/ic_synchro.xml" value="0.1685" />
+        <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/rounded.xml" value="0.121" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/drawable/searchview_background.xml" value="0.1685" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/activity_details.xml" value="0.22826086956521738" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/activity_splash_screen.xml" value="0.22826086956521738" />
+        <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/bottom_sheet_dialog.xml" value="0.264" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/favorite_stations_layout.xml" value="0.22826086956521738" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/layout_station.xml" value="0.22826086956521738" />
         <entry key="..\:/Dev/AndroidProjects/ProjetVelib/app/src/main/res/layout/search_station_layout.xml" value="0.22826086956521738" />
