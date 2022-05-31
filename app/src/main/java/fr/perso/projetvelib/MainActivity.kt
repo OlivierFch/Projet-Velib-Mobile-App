@@ -14,8 +14,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
-import androidx.core.view.isEmpty
-import androidx.core.view.isNotEmpty
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -254,7 +252,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             .build()
 
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://velib-metropole-opendata.smoove.pro/opendata/Velib_Metropole/")
+            .baseUrl("http://94.247.183.221:8078/")
             .addConverterFactory(MoshiConverterFactory.create())
             .client(client)
             .build()
@@ -263,17 +261,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         runBlocking {
             val resultStation = service.getStations()
-            Log.d(TAG, "synchroApi: ${resultStation.data.stations}")
+            Log.d(TAG, "synchroApi: ${resultStation}")
 
-            val resultStationDetails = service.getStationDetails()
-            Log.d(TAG, "synchroApi: ${resultStationDetails.data.stations}")
-
-            resultStation.data.stations.map {
+            resultStation.map {
+                stations.remove(it)
                 stations.add(it)
-            }
-
-            resultStationDetails.data.stations.map {
-                stationDetails.add(it)
             }
 
         }

@@ -12,7 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ProjetVelib">
+        android:theme="@style/Theme.ProjetVelib"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".SplashScreenActivity"
             android:exported="true"
