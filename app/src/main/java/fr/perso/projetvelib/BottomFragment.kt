@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BottomFragment() : BottomSheetDialogFragment() {
@@ -13,8 +14,14 @@ class BottomFragment() : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var view = inflater.inflate(R.layout.bottom_sheet_dialog, container, false)
-        return view
+        return inflater.inflate(R.layout.bottom_sheet_dialog, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val btnFavorite = view.findViewById<Button>(R.id.idBtnFavorite)
+        //btnFavorite.setOnClickListener { favoriteStationsList.add(it) }
     }
 
 }

@@ -94,6 +94,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         })
 
+
+        // Initialisation du bottomsheet qui contient les détails des stations
+        val bottomFragment = BottomFragment()
+        bottomFragment.show(supportFragmentManager, TAG)
+
+
         mapFragment = supportFragmentManager.findFragmentById(R.id.map_carte) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -178,9 +184,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             dialog.isShowing
 
         }*/
-
-        var bottomFragment = BottomFragment()
-        bottomFragment.show(supportFragmentManager, TAG)
 
     }
 
