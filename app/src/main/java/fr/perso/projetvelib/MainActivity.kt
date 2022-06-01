@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
@@ -19,9 +18,14 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.maps.android.clustering.ClusterManager
 import fr.perso.projetvelib.api.VelibApi
@@ -81,6 +85,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         cancelIcon.setColorFilter(Color.WHITE)
 
 
+        // Filter of search
         binding.searchBar.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -93,11 +98,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 return false
             }
         })
-
-
-        // Initialisation du bottomsheet qui contient les détails des stations
-        val bottomFragment = BottomFragment()
-        bottomFragment.show(supportFragmentManager, TAG)
 
 
         mapFragment = supportFragmentManager.findFragmentById(R.id.map_carte) as SupportMapFragment
@@ -167,23 +167,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val geolocationButton = findViewById<FloatingActionButton>(R.id.geolocation_button)
         geolocationButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         geolocationButton.setOnClickListener { getCurrentLocation() }
-
-
-        // Sélection d'une station active un bottomsheet avec le détails des stations
-        /*it.setOnMarkerClickListener {
-
-            val dialog = BottomSheetDialog(this)
-            val view = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
-
-            val btnFavorite = view.findViewById<Button>(R.id.idBtnFavorite)
-            val btnClose = view.findViewById<Button>(R.id.idBtnDismiss)
-
-            //btnFavorite.setOnClickListener { favoriteStationsList.add(it) }
-            btnClose.setOnClickListener { dialog.dismiss() }
-            dialog.setContentView(view)
-            dialog.isShowing
-
-        }*/
 
     }
 
@@ -302,7 +285,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         clusterManager.addItems(stations)
         clusterManager.cluster()
 
+        // Sélection d'une station active un bottomsheet avec le détails des stations
+        clusterManager.setOnClusterItemClickListener {
+            val stationClicked = stations.find { station ->
+                it.title == station.name
+            }
 
+            if (stationClicked !== null){
+                val bottomFragment = BottomFragment(stationClicked)
+                bottomFragment.show(supportFragmentManager, TAG)
+            }else {
+                Log.d(TAG, "Error")
+            }
+            
+            true
+        }
 
     }
 

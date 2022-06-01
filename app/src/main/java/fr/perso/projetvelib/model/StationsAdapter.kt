@@ -8,7 +8,6 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import fr.perso.projetvelib.DetailsStationActivity
 import fr.perso.projetvelib.R
 
 class StationsAdapter(var items: List<Station>) : RecyclerView.Adapter<StationsAdapter.StationsViewHolder>(), Filterable {
