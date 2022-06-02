@@ -32,10 +32,10 @@ class BottomFragment(val station: Station) : BottomSheetDialogFragment() {
         placeAvailable.text = "Places parking restantes: ${station.num_docks_available}"
 
         val mechanicalAvailable = view.findViewById<TextView>(R.id.idNumberBikeAvailable)
-        mechanicalAvailable.text = "Vélib mécaniques : ${station.bikes_available}"
+        mechanicalAvailable.text = "Vélib mécaniques dispo : ${station.bikes_available}"
 
         val ebikeAvailable = view.findViewById<TextView>(R.id.idNumberEbikeAvailable)
-        ebikeAvailable.text = "Vélib électriques: ${station.ebikes_available}"
+        ebikeAvailable.text = "Vélib électriques dispo : ${station.ebikes_available}"
     }
 
 }
