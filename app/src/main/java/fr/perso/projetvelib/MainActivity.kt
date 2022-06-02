@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -18,10 +19,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -70,14 +68,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.stationList.isVisible = false
 
 
-        val searchIcon = binding.searchBar.findViewById<ImageView>(androidx.appcompat.R.id.search_mag_icon)
+        val searchIcon =
+            binding.searchBar.findViewById<ImageView>(androidx.appcompat.R.id.search_mag_icon)
         searchIcon.setColorFilter(Color.WHITE)
 
-        val textView = binding.searchBar.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
+        val textView =
+            binding.searchBar.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
         textView.setTextColor(Color.WHITE)
         textView.hint = "Chercher une station..."
 
-        val cancelIcon = binding.searchBar.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
+        val cancelIcon =
+            binding.searchBar.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
         cancelIcon.setOnClickListener {
             textView.editableText.clear()
             binding.stationList.isVisible = false
@@ -86,7 +87,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         // Filter of search
-        binding.searchBar.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -101,6 +102,31 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         mapFragment = supportFragmentManager.findFragmentById(R.id.map_carte) as SupportMapFragment
+        mapFragment.getMapAsync { mMap ->
+            stationsAdapter.setOnItemClickListener(object : StationsAdapter.onItemClickListener {
+                override fun onItemClick(station: Station) {
+
+                    // Mouvement de caméra vers la position de la station
+                    val cameraStationUpdate = CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            station.lat,
+                            station.lon
+                        ), 17f
+                    )
+                    mMap.animateCamera(cameraStationUpdate)
+
+                    // Cacher la liste des stations
+                    binding.stationList.isVisible = false
+
+                    // Affichage de la bottomSheet avec les détails de la station
+                    val bottomFragment = BottomFragment(station)
+                    bottomFragment.show(supportFragmentManager, TAG)
+                }
+
+            })
+        }
+
+
         mapFragment.getMapAsync(this)
 
     }
@@ -110,18 +136,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
             LatLng(
-                48.8618454,2.3521999
+                48.8618454, 2.3521999
             ), 10f
         )
 
         it.moveCamera(cameraUpdate)
 
-        if (ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED && ActivityCompat
-                .checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION)
+                .checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 101)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                101
+            )
             return
         }
 
@@ -177,7 +207,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             menuInflater.inflate(R.menu.map_type_menu, popupMenu.menu)
             setOnMenuItemClickListener { item ->
 
-                mapFragment = supportFragmentManager.findFragmentById(R.id.map_carte) as SupportMapFragment
+                mapFragment =
+                    supportFragmentManager.findFragmentById(R.id.map_carte) as SupportMapFragment
 
                 mapFragment.getMapAsync {
                     when (item.itemId) {
@@ -273,11 +304,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    private fun setUpClusterManager(it: GoogleMap) {
+    private fun setUpClusterManager(mMap: GoogleMap) {
 
-        val clusterManager = ClusterManager<Station>(this, it)
-        it.setOnCameraIdleListener(clusterManager)
-        it.setOnMarkerClickListener(clusterManager)
+        val clusterManager = ClusterManager<Station>(this, mMap)
+        mMap.setOnCameraIdleListener(clusterManager)
+        mMap.setOnMarkerClickListener(clusterManager)
 
         // Fetch stations' data from API
         synchroApi()
@@ -287,17 +318,28 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Sélection d'une station active un bottomsheet avec le détails des stations
         clusterManager.setOnClusterItemClickListener {
+
+            // Mouvement de caméra vers la position de la station
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                LatLng(
+                    it.lat,
+                    it.lon
+                ), 17f
+            )
+            mMap.animateCamera(cameraUpdate)
+
+
             val stationClicked = stations.find { station ->
                 it.title == station.name
             }
 
-            if (stationClicked !== null){
+            if (stationClicked !== null) {
                 val bottomFragment = BottomFragment(stationClicked)
                 bottomFragment.show(supportFragmentManager, TAG)
-            }else {
+            } else {
                 Log.d(TAG, "Error")
             }
-            
+
             true
         }
 

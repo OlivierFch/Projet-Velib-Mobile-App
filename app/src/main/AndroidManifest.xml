@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="fr.perso.projetvelib">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -25,15 +26,13 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="false">
         </activity>
         <activity
             android:name=".FavoriteStationsActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name=".DetailsStationActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="false">
         </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"

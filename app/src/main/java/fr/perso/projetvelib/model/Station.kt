@@ -30,16 +30,4 @@ data class Station(
         return null
     }
 
-    fun getNumDocksAvailable() : Int {
-        return num_docks_available
-    }
-
-    fun getMechanicalBikeAvailable() : Int {
-        return bikes_available
-    }
-
-    fun getEbikeAvailable() : Int {
-        return ebikes_available
-    }
-
 }

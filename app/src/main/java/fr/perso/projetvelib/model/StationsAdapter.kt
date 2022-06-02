@@ -1,6 +1,5 @@
 package fr.perso.projetvelib.model
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,16 @@ import fr.perso.projetvelib.R
 
 class StationsAdapter(var items: List<Station>) : RecyclerView.Adapter<StationsAdapter.StationsViewHolder>(), Filterable {
 
+    private lateinit var mListener : onItemClickListener
+
+    interface onItemClickListener {
+        fun onItemClick(station: Station)
+    }
+
+    fun setOnItemClickListener(listener: onItemClickListener) {
+        mListener = listener
+    }
+
     var stationsFilteredList: List<Station> = ArrayList()
 
     init {
@@ -21,7 +30,7 @@ class StationsAdapter(var items: List<Station>) : RecyclerView.Adapter<StationsA
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StationsViewHolder {
 
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.layout_station, parent, false)
-        return StationsViewHolder(itemView)
+        return StationsViewHolder(itemView, mListener)
     }
 
     override fun onBindViewHolder(holder: StationsViewHolder, position: Int) {
@@ -30,24 +39,37 @@ class StationsAdapter(var items: List<Station>) : RecyclerView.Adapter<StationsA
 
         holder.bind(station)
 
-        holder.itemView.setOnClickListener {
+        /*holder.itemView.setOnClickListener {
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                station.position
+                , 17f
+            )
+            mMap.animateCamera(cameraUpdate)
+        }*/
+
+        /*holder.itemView.setOnClickListener {
             val context = it.context
             val intent = Intent(context, DetailsStationActivity::class.java)
             intent.putExtra("id", position)
             context.startActivity(intent)
-        }
+        }*/
 
     }
 
     override fun getItemCount() = stationsFilteredList.size
 
 
-    inner class StationsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class StationsViewHolder(itemView: View, listener: onItemClickListener) : RecyclerView.ViewHolder(itemView) {
 
         var stationName: TextView
 
         init {
             stationName = itemView.findViewById(R.id.textViewNameStation)
+
+            itemView.setOnClickListener {
+                listener.onItemClick(stationsFilteredList[position])
+
+            }
         }
 
         fun bind(station: Station) {
