@@ -6,10 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import fr.perso.projetvelib.databinding.FavoriteStationsLayoutBinding
 import fr.perso.projetvelib.model.Station
 
 class BottomFragment(val station: Station) : BottomSheetDialogFragment() {
+
+    val favoriteStationsList: MutableList<Station> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,7 +27,12 @@ class BottomFragment(val station: Station) : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val btnFavorite = view.findViewById<Button>(R.id.idBtnFavorite)
-        //btnFavorite.setOnClickListener { favoriteStationsList.add(it) }
+        btnFavorite.setOnClickListener {
+
+            //favoriteStationsList.add(station)
+            Toast.makeText(requireContext(), "Station ajoutée aux favoris !", Toast.LENGTH_SHORT).show()
+
+        }
 
         val nameStation = view.findViewById<TextView>(R.id.idStationName)
         nameStation.text = station.name

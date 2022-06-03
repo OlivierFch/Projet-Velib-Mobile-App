@@ -11,7 +11,6 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -86,7 +85,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         cancelIcon.setColorFilter(Color.WHITE)
 
 
-        // Filter of search
+        // Filtre de recherche
         binding.searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -103,6 +102,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mapFragment = supportFragmentManager.findFragmentById(R.id.map_carte) as SupportMapFragment
         mapFragment.getMapAsync { mMap ->
+
+            // Action suite à la sélection d'une station dans le recyclerView
             stationsAdapter.setOnItemClickListener(object : StationsAdapter.onItemClickListener {
                 override fun onItemClick(station: Station) {
 
@@ -189,10 +190,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapTypeButton = findViewById<FloatingActionButton>(R.id.map_type_button)
         mapTypeButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         mapTypeButton.setOnClickListener { selectMapMenu() }
+
         // Bouton de refresh pour avoir les dernières infos des stations
         val synchroApiButton = findViewById<FloatingActionButton>(R.id.map_synchro_api)
         synchroApiButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         synchroApiButton.setOnClickListener { synchroApi() }
+
         // Bouton qui permet de se géolocaliser
         val geolocationButton = findViewById<FloatingActionButton>(R.id.geolocation_button)
         geolocationButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))

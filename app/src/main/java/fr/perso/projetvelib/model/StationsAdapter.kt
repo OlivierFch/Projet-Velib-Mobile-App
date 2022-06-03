@@ -12,6 +12,11 @@ import fr.perso.projetvelib.R
 class StationsAdapter(var items: List<Station>) : RecyclerView.Adapter<StationsAdapter.StationsViewHolder>(), Filterable {
 
     private lateinit var mListener : onItemClickListener
+    var stationsFilteredList: List<Station> = ArrayList()
+
+    init {
+        stationsFilteredList = items
+    }
 
     interface onItemClickListener {
         fun onItemClick(station: Station)
@@ -19,12 +24,6 @@ class StationsAdapter(var items: List<Station>) : RecyclerView.Adapter<StationsA
 
     fun setOnItemClickListener(listener: onItemClickListener) {
         mListener = listener
-    }
-
-    var stationsFilteredList: List<Station> = ArrayList()
-
-    init {
-        stationsFilteredList = items
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StationsViewHolder {
@@ -38,21 +37,6 @@ class StationsAdapter(var items: List<Station>) : RecyclerView.Adapter<StationsA
         val station = stationsFilteredList[position]
 
         holder.bind(station)
-
-        /*holder.itemView.setOnClickListener {
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
-                station.position
-                , 17f
-            )
-            mMap.animateCamera(cameraUpdate)
-        }*/
-
-        /*holder.itemView.setOnClickListener {
-            val context = it.context
-            val intent = Intent(context, DetailsStationActivity::class.java)
-            intent.putExtra("id", position)
-            context.startActivity(intent)
-        }*/
 
     }
 

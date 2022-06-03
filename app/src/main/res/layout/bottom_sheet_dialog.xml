@@ -30,7 +30,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@id/idImageStation"
-            android:layout_toRightOf="@id/idImageStation"
             android:text="Nom de la station"
             android:textColor="@color/black"
             android:textSize="18sp"
@@ -44,7 +43,6 @@
             android:layout_below="@id/idStationName"
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@id/idImageStation"
-            android:layout_toRightOf="@id/idImageStation"
             android:text="Places restantes : 30"
             android:textColor="@color/black"
             android:textSize="15sp" />
@@ -57,7 +55,6 @@
             android:layout_below="@id/idPlacesRestantes"
             android:layout_marginTop="10dp"
             android:layout_toEndOf="@id/idImageStation"
-            android:layout_toRightOf="@id/idImageStation"
             android:text="Vélib mécaniques : 10"
             android:textColor="@color/black"
             android:textSize="15sp" />
@@ -70,7 +67,6 @@
             android:layout_below="@id/idNumberBikeAvailable"
             android:layout_marginVertical="10dp"
             android:layout_toEndOf="@id/idImageStation"
-            android:layout_toRightOf="@id/idImageStation"
             android:text="Vélib électriques : 2"
             android:textColor="@color/black"
             android:textSize="15sp" />
@@ -84,10 +80,10 @@
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="25dp"
             android:padding="10dp"
-            android:textSize="20sp"
             android:text="Ajouter aux favoris"
             android:textAllCaps="false"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
     </RelativeLayout>
 
