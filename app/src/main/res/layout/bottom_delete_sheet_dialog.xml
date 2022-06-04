@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:id="@+id/idBottomSheetDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:paddingTop="15dp"
+        android:background="@drawable/gradient_background">
+
+        <!--image view for displaying station image-->
+        <ImageView
+            android:id="@+id/idImageStation"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_bike" />
+
+        <!--text view for displaying station name-->
+        <TextView
+            android:id="@+id/idStationName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/idImageStation"
+            android:text="Nom de la station"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!--text view for displaying available slots-->
+        <TextView
+            android:id="@+id/idPlacesRestantes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idStationName"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/idImageStation"
+            android:text="Places restantes : 30"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <!--text view for displaying available mechanical vélib-->
+        <TextView
+            android:id="@+id/idNumberBikeAvailable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idPlacesRestantes"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/idImageStation"
+            android:text="Vélib mécaniques : 10"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <!--text view for displaying available ebike vélib-->
+        <TextView
+            android:id="@+id/idNumberEbikeAvailable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idNumberBikeAvailable"
+            android:layout_marginVertical="10dp"
+            android:layout_toEndOf="@id/idImageStation"
+            android:text="Vélib électriques : 2"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <!--button for adding our favorite button-->
+        <Button
+            android:id="@+id/idBtnDeleteFavorite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/idImageStation"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="25dp"
+            android:padding="10dp"
+            android:text="@string/supprimer_des_favoris"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

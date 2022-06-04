@@ -80,7 +80,7 @@
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="25dp"
             android:padding="10dp"
-            android:text="Ajouter aux favoris"
+            android:text="@string/ajouter_aux_favoris"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="20sp" />

@@ -10,30 +10,28 @@ import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import fr.perso.projetvelib.model.Station
 
-val favoriteList: MutableList<Station> = mutableListOf()
-
-class BottomAddFragment(val station: Station) : BottomSheetDialogFragment() {
+class BottomDeleteFragment(val station: Station) : BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.bottom_add_sheet_dialog, container, false)
+        return inflater.inflate(R.layout.bottom_delete_sheet_dialog, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val btnFavorite = view.findViewById<Button>(R.id.idBtnFavorite)
-        btnFavorite.setOnClickListener {
+        val btnDeleteFavorite = view.findViewById<Button>(R.id.idBtnDeleteFavorite)
+        btnDeleteFavorite.setOnClickListener {
 
             if (favoriteList.contains(station)) {
-                btnFavorite.isEnabled = false
-                Toast.makeText(requireContext(), "${station.name} est déjà dans les favoris !", Toast.LENGTH_SHORT).show()
+                favoriteList.remove(station)
+                Toast.makeText(requireContext(), "${station.name} est supprimé des favoris !", Toast.LENGTH_SHORT).show()
             }else {
-                favoriteList.add(station)
-                Toast.makeText(requireContext(), "${station.name} est ajoutée aux favoris !", Toast.LENGTH_SHORT).show()
+                btnDeleteFavorite.isEnabled = false
+                Toast.makeText(requireContext(), "${station.name} est déjà supprimé des favoris !", Toast.LENGTH_SHORT).show()
             }
 
         }
@@ -50,6 +48,5 @@ class BottomAddFragment(val station: Station) : BottomSheetDialogFragment() {
         val ebikeAvailable = view.findViewById<TextView>(R.id.idNumberEbikeAvailable)
         ebikeAvailable.text = "Vélib électriques dispo : ${station.ebikes_available}"
     }
-
 
 }

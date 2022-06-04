@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Vélib</string>
+    <string name="ajouter_aux_favoris">Ajouter aux favoris</string>
+    <string name="supprimer_des_favoris">Supprimer des favoris</string>
 </resources>

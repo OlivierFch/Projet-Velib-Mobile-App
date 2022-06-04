@@ -32,7 +32,7 @@ class FavoriteStationsActivity : AppCompatActivity() {
             override fun onItemClick(station: Station) {
 
                 // Affichage de la bottomSheet avec les détails de la station
-                val bottomFragment = BottomAddFragment(station)
+                val bottomFragment = BottomDeleteFragment(station)
                 bottomFragment.show(supportFragmentManager, TAG)
 
             }
