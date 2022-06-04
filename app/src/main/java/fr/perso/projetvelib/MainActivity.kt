@@ -11,9 +11,11 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -184,7 +186,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val favoriteButton = findViewById<FloatingActionButton>(R.id.favorite_stations_button)
         favoriteButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         favoriteButton.setOnClickListener {
-            startActivity(Intent(this, FavoriteStationsActivity::class.java))
+
+            if (favoriteList.isEmpty()) {
+                Toast.makeText(applicationContext, "La liste est vide ! Vous devez ajouter une station pour y accéder.", Toast.LENGTH_LONG).show()
+                FavoriteStationsActivity().finish()
+            }else {
+                startActivity(Intent(this, FavoriteStationsActivity::class.java))
+            }
+
         }
         // Bouton qui permet de changer le type de carte en fonction des besoins
         val mapTypeButton = findViewById<FloatingActionButton>(R.id.map_type_button)

@@ -3,6 +3,7 @@ package fr.perso.projetvelib
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +25,7 @@ class FavoriteStationsActivity : AppCompatActivity() {
         stationsAdapter = StationsAdapter(favoriteList)
 
         recyclerViewStations.apply {
-            layoutManager = LinearLayoutManager(applicationContext)
+            layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
             adapter = stationsAdapter
         }
 
@@ -34,12 +35,9 @@ class FavoriteStationsActivity : AppCompatActivity() {
                 // Affichage de la bottomSheet avec les détails de la station
                 val bottomFragment = BottomDeleteFragment(station)
                 bottomFragment.show(supportFragmentManager, TAG)
-
             }
-
         })
 
     }
-
 
 }

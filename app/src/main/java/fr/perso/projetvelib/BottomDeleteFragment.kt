@@ -28,13 +28,30 @@ class BottomDeleteFragment(val station: Station) : BottomSheetDialogFragment() {
 
             if (favoriteList.contains(station)) {
                 favoriteList.remove(station)
-                Toast.makeText(requireContext(), "${station.name} est supprimé des favoris !", Toast.LENGTH_SHORT).show()
-            }else {
+                Toast.makeText(
+                    requireContext(),
+                    "${station.name} est supprimée des favoris !",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            } else {
                 btnDeleteFavorite.isEnabled = false
-                Toast.makeText(requireContext(), "${station.name} est déjà supprimé des favoris !", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "${station.name} est déjà supprimée des favoris !",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
+            // Refresh les données du recyclerView
+            FavoriteStationsActivity().recyclerViewStations.adapter?.notifyDataSetChanged()
+
         }
+
+        // Fermer l'activité si la liste est vide
+        /*if (favoriteList.isEmpty()) {
+            FavoriteStationsActivity().finish()
+        }*/
 
         val nameStation = view.findViewById<TextView>(R.id.idStationName)
         nameStation.text = station.name
