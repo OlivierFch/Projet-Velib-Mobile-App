@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     binding.stationList.isVisible = false
 
                     // Affichage de la bottomSheet avec les détails de la station
-                    val bottomFragment = BottomFragment(station)
+                    val bottomFragment = BottomAddFragment(station)
                     bottomFragment.show(supportFragmentManager, TAG)
                 }
 
@@ -337,7 +337,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             if (stationClicked !== null) {
-                val bottomFragment = BottomFragment(stationClicked)
+                val bottomFragment = BottomAddFragment(stationClicked)
                 bottomFragment.show(supportFragmentManager, TAG)
             } else {
                 Log.d(TAG, "Error")

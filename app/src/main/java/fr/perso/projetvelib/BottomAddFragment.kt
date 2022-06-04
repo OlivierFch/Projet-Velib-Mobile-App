@@ -8,12 +8,11 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import fr.perso.projetvelib.databinding.FavoriteStationsLayoutBinding
 import fr.perso.projetvelib.model.Station
 
-class BottomFragment(val station: Station) : BottomSheetDialogFragment() {
+val favoriteList: MutableList<Station> = mutableListOf()
 
-    val favoriteStationsList: MutableList<Station> = mutableListOf()
+class BottomAddFragment(val station: Station) : BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,8 +28,8 @@ class BottomFragment(val station: Station) : BottomSheetDialogFragment() {
         val btnFavorite = view.findViewById<Button>(R.id.idBtnFavorite)
         btnFavorite.setOnClickListener {
 
-            //favoriteStationsList.add(station)
-            Toast.makeText(requireContext(), "Station ajoutée aux favoris !", Toast.LENGTH_SHORT).show()
+            favoriteList.add(station)
+            Toast.makeText(requireContext(), "${station.name} est ajoutée aux favoris !", Toast.LENGTH_SHORT).show()
 
         }
 
@@ -46,5 +45,6 @@ class BottomFragment(val station: Station) : BottomSheetDialogFragment() {
         val ebikeAvailable = view.findViewById<TextView>(R.id.idNumberEbikeAvailable)
         ebikeAvailable.text = "Vélib électriques dispo : ${station.ebikes_available}"
     }
+
 
 }

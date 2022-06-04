@@ -6,13 +6,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.maps.SupportMapFragment
 import fr.perso.projetvelib.model.Station
 import fr.perso.projetvelib.model.StationsAdapter
 
 class FavoriteStationsActivity : AppCompatActivity() {
 
-    private val stations: MutableList<Station> = mutableListOf()
     lateinit var recyclerViewStations: RecyclerView
     lateinit var stationsAdapter: StationsAdapter
 
@@ -22,9 +20,9 @@ class FavoriteStationsActivity : AppCompatActivity() {
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#07BEB8")));
         supportActionBar?.title = "Favoris"
 
-        // Instancier la liste des stations en favoris
         recyclerViewStations = findViewById(R.id.favoriteStationsList)
-        stationsAdapter = StationsAdapter(stations)
+        stationsAdapter = StationsAdapter(favoriteList)
+
         recyclerViewStations.apply {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = stationsAdapter
@@ -34,14 +32,14 @@ class FavoriteStationsActivity : AppCompatActivity() {
             override fun onItemClick(station: Station) {
 
                 // Affichage de la bottomSheet avec les détails de la station
-                val bottomFragment = BottomFragment(station)
+                val bottomFragment = BottomAddFragment(station)
                 bottomFragment.show(supportFragmentManager, TAG)
 
             }
 
         })
-        
 
     }
+
 
 }
