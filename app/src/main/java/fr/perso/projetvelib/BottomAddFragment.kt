@@ -12,7 +12,6 @@ import fr.perso.projetvelib.controller.DataController
 import fr.perso.projetvelib.model.Station
 
 var favoriteList: List<Station> = listOf()
-//var favoriteList: List<Station> = DataController(appliContext = MainActivity().applicationContext).getAllFavoriteStations()
 
 class BottomAddFragment(val station: Station) : BottomSheetDialogFragment() {
 
