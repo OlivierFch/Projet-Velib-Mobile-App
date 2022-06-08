@@ -60,19 +60,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         dc.syncDB()
         stations = dc.getAllStations()
 
-        // Ajouter données en dur
+        // Ajouter des stations likées de base dans la DB
         stations[2].station_id
         stations[150].station_id
         stations[952].station_id
         stations[42].station_id
         DataController(this.applicationContext).likeStation(stations[2])
-        Log.d(TAG, "station 2")
-
         DataController(this.applicationContext).likeStation(stations[150])
         DataController(this.applicationContext).likeStation(stations[952])
         DataController(this.applicationContext).likeStation(stations[42])
         favoriteList = DataController(this).getAllFavoriteStations()
-        Log.d(TAG, "FAVORITELIST: ${favoriteList}")
+
 
         recyclerViewStations = findViewById(R.id.stationList)
         stationsAdapter = StationsAdapter(stations)
