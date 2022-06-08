@@ -29,14 +29,7 @@ class BottomDeleteFragment(val station: Station) : BottomSheetDialogFragment() {
 
             if (favoriteList.contains(station)) {
 
-                DataController(MainActivity().applicationContext).dislikeStation(station)
-
-            /*favoriteList.remove(station)
-                Toast.makeText(
-                    requireContext(),
-                    "${station.name} est supprimée des favoris !",
-                    Toast.LENGTH_SHORT
-                ).show()*/
+                DataController(this.requireContext()).dislikeStation(station)
 
             } else {
                 btnDeleteFavorite.isEnabled = false
