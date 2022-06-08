@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import fr.perso.projetvelib.controller.DataController
 import fr.perso.projetvelib.model.Station
 
 class BottomDeleteFragment(val station: Station) : BottomSheetDialogFragment() {
@@ -27,12 +28,15 @@ class BottomDeleteFragment(val station: Station) : BottomSheetDialogFragment() {
         btnDeleteFavorite.setOnClickListener {
 
             if (favoriteList.contains(station)) {
-                favoriteList.remove(station)
+
+                DataController(MainActivity().applicationContext).dislikeStation(station)
+
+            /*favoriteList.remove(station)
                 Toast.makeText(
                     requireContext(),
                     "${station.name} est supprimée des favoris !",
                     Toast.LENGTH_SHORT
-                ).show()
+                ).show()*/
 
             } else {
                 btnDeleteFavorite.isEnabled = false
@@ -44,7 +48,8 @@ class BottomDeleteFragment(val station: Station) : BottomSheetDialogFragment() {
             }
 
             // Refresh les données du recyclerView
-            FavoriteStationsActivity().recyclerViewStations.adapter?.notifyDataSetChanged()
+            //FavoriteStationsActivity().recyclerViewStations.adapter?.notifyDataSetChanged()
+            favoriteList = DataController(MainActivity().applicationContext).getAllFavoriteStations()
 
         }
 

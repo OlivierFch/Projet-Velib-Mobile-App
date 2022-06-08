@@ -8,9 +8,11 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import fr.perso.projetvelib.controller.DataController
 import fr.perso.projetvelib.model.Station
 
-val favoriteList: MutableList<Station> = mutableListOf()
+//val favoriteList: MutableList<Station> = mutableListOf()
+var favoriteList: List<Station> = DataController(MainActivity().applicationContext).getAllFavoriteStations()
 
 class BottomAddFragment(val station: Station) : BottomSheetDialogFragment() {
 
@@ -32,9 +34,13 @@ class BottomAddFragment(val station: Station) : BottomSheetDialogFragment() {
                 btnFavorite.isEnabled = false
                 Toast.makeText(requireContext(), "${station.name} est déjà dans les favoris !", Toast.LENGTH_SHORT).show()
             }else {
-                favoriteList.add(station)
-                Toast.makeText(requireContext(), "${station.name} est ajoutée aux favoris !", Toast.LENGTH_SHORT).show()
+
+                DataController(MainActivity().applicationContext).likeStation(station)
+                //favoriteList.add(station)
+                //Toast.makeText(requireContext(), "${station.name} est ajoutée aux favoris !", Toast.LENGTH_SHORT).show()
             }
+
+            favoriteList = DataController(MainActivity().applicationContext).getAllFavoriteStations()
 
         }
 

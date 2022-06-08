@@ -15,27 +15,24 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.maps.android.clustering.ClusterManager
-import fr.perso.projetvelib.api.VelibApi
+import fr.perso.projetvelib.controller.DataController
 import fr.perso.projetvelib.databinding.ActivityMainBinding
 import fr.perso.projetvelib.model.Station
 import fr.perso.projetvelib.model.StationsAdapter
-import kotlinx.coroutines.runBlocking
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 const val TAG = "MainActivity"
 
@@ -46,7 +43,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var currentLocation: Location
     private var currentMarker: Marker? = null
 
-    private val stations: MutableList<Station> = mutableListOf()
+    private lateinit var stations: List<Station>
 
     private lateinit var binding: ActivityMainBinding
     lateinit var recyclerViewStations: RecyclerView
@@ -58,8 +55,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
         supportActionBar?.hide()
 
-        recyclerViewStations = findViewById(R.id.stationList)
+        // Appel des données dans la DB
+        val dc = DataController(this.applicationContext)
+        dc.syncDB()
+        stations = dc.getAllStations()
+        //Log.d(TAG, dc.getAllStations().toString())
 
+        recyclerViewStations = findViewById(R.id.stationList)
         stationsAdapter = StationsAdapter(stations)
         recyclerViewStations.apply {
             layoutManager = LinearLayoutManager(applicationContext)
@@ -203,7 +205,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // Bouton de refresh pour avoir les dernières infos des stations
         val synchroApiButton = findViewById<FloatingActionButton>(R.id.map_synchro_api)
         synchroApiButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
-        synchroApiButton.setOnClickListener { synchroApi() }
+        synchroApiButton.setOnClickListener { DataController(this.applicationContext).syncDB() }
 
         // Bouton qui permet de se géolocaliser
         val geolocationButton = findViewById<FloatingActionButton>(R.id.geolocation_button)
@@ -286,44 +288,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    private fun synchroApi() {
-
-        val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
-        val client = OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .build()
-
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://94.247.183.221:8078/")
-            .addConverterFactory(MoshiConverterFactory.create())
-            .client(client)
-            .build()
-
-        val service = retrofit.create(VelibApi::class.java)
-
-        runBlocking {
-            val resultStation = service.getStations()
-            Log.d(TAG, "synchroApi: ${resultStation}")
-
-            resultStation.map {
-                stations.remove(it)
-                stations.add(it)
-            }
-
-        }
-    }
-
-
     private fun setUpClusterManager(mMap: GoogleMap) {
 
         val clusterManager = ClusterManager<Station>(this, mMap)
         mMap.setOnCameraIdleListener(clusterManager)
         mMap.setOnMarkerClickListener(clusterManager)
-
-        // Fetch stations' data from API
-        synchroApi()
 
         clusterManager.addItems(stations)
         clusterManager.cluster()

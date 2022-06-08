@@ -7,7 +7,9 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import fr.perso.projetvelib.MainActivity
 import fr.perso.projetvelib.R
+import fr.perso.projetvelib.controller.DataController
 import fr.perso.projetvelib.favoriteList
 
 class StationsAdapter(var items: List<Station>) : RecyclerView.Adapter<StationsAdapter.StationsViewHolder>(), Filterable {
