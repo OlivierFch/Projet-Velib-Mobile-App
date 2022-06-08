@@ -48,8 +48,7 @@ class BottomDeleteFragment(val station: Station) : BottomSheetDialogFragment() {
             }
 
             // Refresh les données du recyclerView
-            //FavoriteStationsActivity().recyclerViewStations.adapter?.notifyDataSetChanged()
-            favoriteList = DataController(MainActivity().applicationContext).getAllFavoriteStations()
+            favoriteList = DataController(this.requireContext()).getAllFavoriteStations()
 
         }
 
