@@ -35,8 +35,7 @@ class BottomAddFragment(val station: Station) : BottomSheetDialogFragment() {
             }else {
 
                 DataController(this.requireContext()).likeStation(station)
-                //favoriteList.add(station)
-                //Toast.makeText(requireContext(), "${station.name} est ajoutée aux favoris !", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "${station.name} est ajoutée aux favoris !", Toast.LENGTH_SHORT).show()
             }
 
             // Refresh favoriteList

@@ -30,6 +30,7 @@ class BottomDeleteFragment(val station: Station) : BottomSheetDialogFragment() {
             if (favoriteList.contains(station)) {
 
                 DataController(this.requireContext()).dislikeStation(station)
+                Toast.makeText(requireContext(), "${station.name} est supprimée des favoris !", Toast.LENGTH_SHORT).show()
 
             } else {
                 btnDeleteFavorite.isEnabled = false
@@ -45,10 +46,6 @@ class BottomDeleteFragment(val station: Station) : BottomSheetDialogFragment() {
 
         }
 
-        // Fermer l'activité si la liste est vide
-        /*if (favoriteList.isEmpty()) {
-            FavoriteStationsActivity().finish()
-        }*/
 
         val nameStation = view.findViewById<TextView>(R.id.idStationName)
         nameStation.text = station.name

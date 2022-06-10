@@ -6,19 +6,25 @@ import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.location.Location
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -29,6 +35,8 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.maps.android.clustering.ClusterManager
+import fr.perso.projetvelib.api.AppDatabase
+import fr.perso.projetvelib.api.AppDatabase_Impl
 import fr.perso.projetvelib.controller.DataController
 import fr.perso.projetvelib.databinding.ActivityMainBinding
 import fr.perso.projetvelib.model.Station
@@ -39,15 +47,16 @@ const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mapFragment: SupportMapFragment
-    private var isLocationPermissionOk = false
     private lateinit var currentLocation: Location
     private var currentMarker: Marker? = null
 
-    private lateinit var stations: List<Station>
+    private var isLocationPermissionGranted = false
 
+    private lateinit var stations: List<Station>
     private lateinit var binding: ActivityMainBinding
     lateinit var recyclerViewStations: RecyclerView
     lateinit var stationsAdapter: StationsAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,10 +64,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
         supportActionBar?.hide()
 
-        // Appel des données dans la DB
+
         val dc = DataController(this.applicationContext)
         dc.syncDB()
         stations = dc.getAllStations()
+
+        // Ajouter les stations en cache pour la première fois lors de l'installation
+        if (stations.isEmpty()){
+            dc.syncDB(true)
+            stations = dc.getAllStations()
+        }else{
+            Log.d(TAG, "Stations stockées dans la database")
+        }
+
 
         // Ajouter des stations likées de base dans la DB
         stations[2].station_id
@@ -71,6 +89,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         DataController(this.applicationContext).likeStation(stations[42])
         favoriteList = DataController(this).getAllFavoriteStations()
 
+
+        // Permission de localisation
+        //checkLocationPermission()
 
         recyclerViewStations = findViewById(R.id.stationList)
         stationsAdapter = StationsAdapter(stations)
@@ -109,7 +130,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onQueryTextChange(newText: String?): Boolean {
                 binding.stationList.isVisible = textView.text.isNotEmpty()
                 stationsAdapter.filter.filter(newText)
-
                 return false
             }
         })
@@ -148,6 +168,89 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private fun checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                AlertDialog.Builder(this)
+                    .setTitle("Location Permission Needed")
+                    .setMessage("This app needs the Location permission, please accept to use location functionality")
+                    .setPositiveButton(
+                        "OK"
+                    ) { _, _ ->
+                        //Prompt the user once explanation has been shown
+                        requestLocationPermission()
+                    }
+                    .create()
+                    .show()
+            } else {
+                // No explanation needed, we can request the permission.
+                requestLocationPermission()
+            }
+        } else {
+            checkBackgroundLocation()
+        }
+    }
+
+    companion object {
+        private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
+        private const val MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION = 66
+    }
+
+    private fun requestBackgroundLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                ),
+                MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION
+            )
+        } else {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                MY_PERMISSIONS_REQUEST_LOCATION
+            )
+        }
+    }
+
+    private fun checkBackgroundLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestBackgroundLocationPermission()
+        }
+    }
+
+    private fun requestLocationPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+            ),
+            MY_PERMISSIONS_REQUEST_LOCATION
+        )
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     override fun onMapReady(it: GoogleMap) {
 
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
@@ -158,7 +261,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         it.moveCamera(cameraUpdate)
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED && ActivityCompat
                 .checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
@@ -169,12 +272,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 101
             )
             return
+        }*/
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+
+            it.isMyLocationEnabled = true
+            it.uiSettings.isTiltGesturesEnabled = true
+            it.uiSettings.isMyLocationButtonEnabled = false
         }
-
-        it.isMyLocationEnabled = true
-        it.uiSettings.isTiltGesturesEnabled = true
-        it.uiSettings.isMyLocationButtonEnabled = false
-
 
         // Afficher les bornes en individuel
         /*synchroApi()
@@ -201,13 +308,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         favoriteButton.setOnClickListener {
 
             if (favoriteList.isEmpty()) {
-                Toast.makeText(applicationContext, "La liste est vide ! Vous devez ajouter une station pour y accéder.", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    applicationContext,
+                    "La liste est vide ! Vous devez ajouter une station pour y accéder.",
+                    Toast.LENGTH_LONG
+                ).show()
                 FavoriteStationsActivity().finish()
-            }else {
+            } else {
                 startActivity(Intent(this, FavoriteStationsActivity::class.java))
             }
 
         }
+
         // Bouton qui permet de changer le type de carte en fonction des besoins
         val mapTypeButton = findViewById<FloatingActionButton>(R.id.map_type_button)
         mapTypeButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
@@ -261,7 +373,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            isLocationPermissionOk = false
+            isLocationPermissionGranted = false
             return
         }
         fusedLocationProviderClient.lastLocation.addOnSuccessListener {
