@@ -90,6 +90,8 @@ class DataController(appliContext: Context) {
             .build()
 
         val retrofit = Retrofit.Builder()
+
+                // API créée par un script Python qui récupère les données utiles pour le projet depuis les APIs Vélib
             .baseUrl("http://94.247.183.221:8078/")
             .addConverterFactory(MoshiConverterFactory.create())
             .client(client)
