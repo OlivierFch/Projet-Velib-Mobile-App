@@ -7,19 +7,16 @@ import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.location.Location
+import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
@@ -27,7 +24,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -38,8 +35,6 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.maps.android.clustering.ClusterManager
-import fr.perso.projetvelib.api.AppDatabase
-import fr.perso.projetvelib.api.AppDatabase_Impl
 import fr.perso.projetvelib.controller.DataController
 import fr.perso.projetvelib.databinding.ActivityMainBinding
 import fr.perso.projetvelib.model.Station
@@ -162,13 +157,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     val bottomFragment = BottomAddFragment(station)
                     bottomFragment.show(supportFragmentManager, TAG)
                 }
-
             })
         }
-
-
         mapFragment.getMapAsync(this)
-
     }
 
 
@@ -179,21 +170,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 48.8618454, 2.3521999
             ), 10f
         )
-
         it.moveCamera(cameraUpdate)
-
-        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED && ActivityCompat
-                .checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                101
-            )
-            return
-        }*/
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED
@@ -204,21 +181,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             it.uiSettings.isMyLocationButtonEnabled = false
         }
 
-        // Afficher les bornes en individuel
-        /*synchroApi()
-
-        stations.forEach{
-            station -> val (_, name, latitude, longitude) = station
-            val velibCoordinate = LatLng(latitude, longitude)
-
-            it.addMarker(
-                MarkerOptions()
-                    .position(velibCoordinate)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                    .title(name)
-            )
-        }*/
-
 
         // Afficher les stations sous forme de clusters
         setUpClusterManager(it)
@@ -227,7 +189,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         val favoriteButton = findViewById<FloatingActionButton>(R.id.favorite_stations_button)
         favoriteButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         favoriteButton.setOnClickListener {
-
             if (favoriteList.isEmpty()) {
                 Toast.makeText(
                     applicationContext,
@@ -238,22 +199,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             } else {
                 startActivity(Intent(this, FavoriteStationsActivity::class.java))
             }
-
         }
 
         // Bouton qui permet de changer le type de carte en fonction des besoins
         val mapTypeButton = findViewById<FloatingActionButton>(R.id.map_type_button)
         mapTypeButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         mapTypeButton.setOnClickListener {
-
             if (checkForInternet(this)) {
                 selectMapMenu()
             } else {
                 mapTypeButton.isEnabled = false
                 Toast.makeText(this, "Connectez vous à internet pour changer la carte", Toast.LENGTH_LONG).show()
             }
-
-
         }
 
         // Bouton de refresh pour avoir les dernières infos des stations
@@ -275,7 +232,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // Bouton qui permet de se géolocaliser
         val geolocationButton = findViewById<FloatingActionButton>(R.id.geolocation_button)
         geolocationButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
-        geolocationButton.setOnClickListener { getCurrentLocation() }
+        geolocationButton.setOnClickListener {
+            if (isLocationEnabled()) {
+                getCurrentLocation()
+            }else {
+                Toast.makeText(this, "Activer la localisation", Toast.LENGTH_LONG).show()
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+        }
 
     }
 
@@ -319,6 +283,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+    // Fonction qui vérifie si le GPS est activé
+    private fun isLocationEnabled(): Boolean {
+        val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+
     private fun getCurrentLocation() {
         val fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(this)
@@ -335,17 +306,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
         fusedLocationProviderClient.lastLocation.addOnCompleteListener {
-
             val location: Location? = it.result
-
             if (location == null) {
-                Toast.makeText(this, "Localisation non trouvée", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Activez votre localisation !", Toast.LENGTH_SHORT).show()
 
             }else{
                 currentLocation = location
                 moveCameraToLocation(currentLocation)
             }
-
         }
     }
 
