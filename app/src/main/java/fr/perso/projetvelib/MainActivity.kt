@@ -1,11 +1,14 @@
 package fr.perso.projetvelib
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.location.Location
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -93,6 +96,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // Permission de localisation
         //checkLocationPermission()
 
+
         recyclerViewStations = findViewById(R.id.stationList)
         stationsAdapter = StationsAdapter(stations)
         recyclerViewStations.apply {
@@ -168,89 +172,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    private fun checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            ) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                AlertDialog.Builder(this)
-                    .setTitle("Location Permission Needed")
-                    .setMessage("This app needs the Location permission, please accept to use location functionality")
-                    .setPositiveButton(
-                        "OK"
-                    ) { _, _ ->
-                        //Prompt the user once explanation has been shown
-                        requestLocationPermission()
-                    }
-                    .create()
-                    .show()
-            } else {
-                // No explanation needed, we can request the permission.
-                requestLocationPermission()
-            }
-        } else {
-            checkBackgroundLocation()
-        }
-    }
-
-    companion object {
-        private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
-        private const val MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION = 66
-    }
-
-    private fun requestBackgroundLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                ),
-                MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION
-            )
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                MY_PERMISSIONS_REQUEST_LOCATION
-            )
-        }
-    }
-
-    private fun checkBackgroundLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestBackgroundLocationPermission()
-        }
-    }
-
-    private fun requestLocationPermission() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-            ),
-            MY_PERMISSIONS_REQUEST_LOCATION
-        )
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
-
     override fun onMapReady(it: GoogleMap) {
 
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(
@@ -323,18 +244,55 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // Bouton qui permet de changer le type de carte en fonction des besoins
         val mapTypeButton = findViewById<FloatingActionButton>(R.id.map_type_button)
         mapTypeButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
-        mapTypeButton.setOnClickListener { selectMapMenu() }
+        mapTypeButton.setOnClickListener {
+
+            if (checkForInternet(this)) {
+                selectMapMenu()
+            } else {
+                mapTypeButton.isEnabled = false
+                Toast.makeText(this, "Connectez vous à internet pour changer la carte", Toast.LENGTH_LONG).show()
+            }
+
+
+        }
 
         // Bouton de refresh pour avoir les dernières infos des stations
         val synchroApiButton = findViewById<FloatingActionButton>(R.id.map_synchro_api)
         synchroApiButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
-        synchroApiButton.setOnClickListener { DataController(this.applicationContext).syncDB() }
+        synchroApiButton.setOnClickListener {
+
+            if (checkForInternet(this)) {
+                Toast.makeText(this, "Chargement des données...", Toast.LENGTH_SHORT).show()
+                DataController(this.applicationContext).syncDB()
+                Toast.makeText(this, "Données chargées !", Toast.LENGTH_SHORT).show()
+            } else {
+                synchroApiButton.isEnabled = false
+                Toast.makeText(this, "Connectez vous à internet pour recharger les données", Toast.LENGTH_LONG).show()
+            }
+
+        }
 
         // Bouton qui permet de se géolocaliser
         val geolocationButton = findViewById<FloatingActionButton>(R.id.geolocation_button)
         geolocationButton.imageTintList = ColorStateList.valueOf(Color.rgb(255, 255, 255))
         geolocationButton.setOnClickListener { getCurrentLocation() }
 
+    }
+
+
+    private fun checkForInternet(context: Context): Boolean {
+
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+        return when {
+            // Indicates this network uses a Wi-Fi transport, or WiFi has network connectivity
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            // Indicates this network uses a Cellular transport. or Cellular has network connectivity
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            else -> false
+        }
     }
 
 
@@ -376,10 +334,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             isLocationPermissionGranted = false
             return
         }
-        fusedLocationProviderClient.lastLocation.addOnSuccessListener {
+        fusedLocationProviderClient.lastLocation.addOnCompleteListener {
 
-            currentLocation = it
-            moveCameraToLocation(currentLocation)
+            val location: Location? = it.result
+
+            if (location == null) {
+                Toast.makeText(this, "Localisation non trouvée", Toast.LENGTH_SHORT).show()
+
+            }else{
+                currentLocation = location
+                moveCameraToLocation(currentLocation)
+            }
+
         }
     }
 
