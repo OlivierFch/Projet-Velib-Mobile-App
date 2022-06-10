@@ -1,6 +1,7 @@
 package fr.perso.projetvelib
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -47,9 +48,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var currentLocation: Location
     private var currentMarker: Marker? = null
-
-    private var isLocationPermissionGranted = false
-
     private lateinit var stations: List<Station>
     private lateinit var binding: ActivityMainBinding
     lateinit var recyclerViewStations: RecyclerView
@@ -86,10 +84,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         DataController(this.applicationContext).likeStation(stations[952])
         DataController(this.applicationContext).likeStation(stations[42])
         favoriteList = DataController(this).getAllFavoriteStations()
-
-
-        // Permission de localisation
-        //checkLocationPermission()
 
 
         recyclerViewStations = findViewById(R.id.stationList)
@@ -171,15 +165,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             ), 10f
         )
         it.moveCamera(cameraUpdate)
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-
-            it.isMyLocationEnabled = true
-            it.uiSettings.isTiltGesturesEnabled = true
-            it.uiSettings.isMyLocationButtonEnabled = false
-        }
 
 
         // Afficher les stations sous forme de clusters
@@ -302,9 +287,22 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            isLocationPermissionGranted = false
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                101
+            )
             return
         }
+
+        mapFragment =
+            supportFragmentManager.findFragmentById(R.id.map_carte) as SupportMapFragment
+        mapFragment.getMapAsync {
+            it.isMyLocationEnabled = true
+            it.uiSettings.isTiltGesturesEnabled = true
+            it.uiSettings.isMyLocationButtonEnabled = false
+        }
+
         fusedLocationProviderClient.lastLocation.addOnCompleteListener {
             val location: Location? = it.result
             if (location == null) {
