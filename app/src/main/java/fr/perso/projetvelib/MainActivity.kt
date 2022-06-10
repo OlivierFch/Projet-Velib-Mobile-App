@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
         supportActionBar?.hide()
 
-
+        // Récupération des données de stations dans la DB
         val dc = DataController(this.applicationContext)
         dc.syncDB()
         stations = dc.getAllStations()
